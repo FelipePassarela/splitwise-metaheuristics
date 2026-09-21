@@ -1,0 +1,39 @@
+@startuml
+
+hide empty members
+
+class Person <<dataclass>> {
+  +id: int
+  +balance: int
+  +is_settled: bool {readOnly}
+}
+
+class Creditor {
+  +receive(amount: int)
+}
+
+class Debtor {
+  +debt: int {readOnly}
+  +pay(amount: int)
+}
+
+class Exchange <<dataclass>> {
+  +amount: int
+}
+
+class BalancePool {
+  +apply(exchange: Exchange)
+}
+
+Person <|-- Creditor
+Person <|-- Debtor
+
+BalancePool o-- "0..*" Creditor
+BalancePool o-- "0..*" Debtor
+
+Exchange --> Debtor : payer
+Exchange --> Creditor : receiver
+
+BalancePool ..> Exchange
+
+@enduml
